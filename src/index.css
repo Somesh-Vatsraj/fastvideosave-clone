@@ -1,19 +1,156 @@
+/* ============================================
+   FONT FACES — Be Vietnam Pro
+   ============================================ */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/be-vietnam-pro-300.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/be-vietnam-pro-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/be-vietnam-pro-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/be-vietnam-pro-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/be-vietnam-pro-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================
+   TAILWIND LAYERS
+   ============================================ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   BASE OVERRIDES
+   ============================================ */
 @layer base {
-  html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-  body {
-    @apply bg-white text-slate-800 antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-feature-settings: 'cv11', 'ss01';
+  html {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
   }
-  ::selection { @apply bg-brand-100 text-brand-700; }
+
+  body {
+    margin: 0;
+    line-height: inherit;
+    /* Original site radial gradient background */
+    background-image: radial-gradient(circle at 50% -20%, #e0e7ff, #f8fafc 40%, #fff);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  /* Audio element styling — original site */
+  audio::-webkit-media-controls-panel {
+    background-color: #f8fafc;
+  }
+  audio::-webkit-media-controls-time-remaining-display {
+    display: none;
+  }
+
+  /* Autofill override — original site */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+    -webkit-text-fill-color: #0f172a !important;
+  }
+
+  /* Selection color — original site */
+  ::selection {
+    background-color: #6366f1;
+    color: #ffffff;
+  }
 }
 
+/* ============================================
+   COMPONENT UTILITIES
+   ============================================ */
 @layer components {
-  .btn-brand {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-brand-700 active:scale-[0.98] disabled:opacity-60;
+  /* Glass panel — original site */
+  .glass-panel {
+    @apply border border-slate-200 bg-white/60 backdrop-blur-md;
   }
+
+  /* Text gradient — original site (indigo → purple → pink) */
+  .text-gradient {
+    @apply bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent;
+  }
+
+  /* Primary brand button */
+  .btn-brand {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60;
+  }
+
+  /* Pill input */
+  .input-pill {
+    @apply w-full rounded-full border border-slate-200 bg-white px-5 py-3.5 text-slate-900 placeholder-slate-400 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30;
+  }
+}
+
+/* ============================================
+   ADSENSE ANTI-ANCHOR LOGIC — original site
+   (Yeh anchor ads ko hide karta hai jab popup open ho)
+   ============================================ */
+html.popad-open .adsbygoogle-noablate,
+body.popad-open .adsbygoogle-noablate,
+html.popad-open ins.adsbygoogle-noablate,
+body.popad-open ins.adsbygoogle-noablate,
+html.popad-open #google_ads_iframe_anchor_container,
+body.popad-open #google_ads_iframe_anchor_container,
+html.popad-open #google_ads_iframe_anchor_container_anchor,
+body.popad-open #google_ads_iframe_anchor_container_anchor,
+html.popad-open .google-auto-placed,
+body.popad-open .google-auto-placed,
+html.hide-anchor .adsbygoogle-noablate,
+body.hide-anchor .adsbygoogle-noablate,
+html.hide-anchor ins.adsbygoogle-noablate,
+body.hide-anchor ins.adsbygoogle-noablate,
+html.hide-anchor #google_ads_iframe_anchor_container,
+body.hide-anchor #google_ads_iframe_anchor_container,
+html.hide-anchor #google_ads_iframe_anchor_container_anchor,
+body.hide-anchor #google_ads_iframe_anchor_container_anchor,
+html.hide-anchor .google-auto-placed,
+body.hide-anchor .google-auto-placed {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+}
+
+html.popad-open,
+body.popad-open,
+html.hide-anchor,
+body.hide-anchor {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
