@@ -1,5 +1,6 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Video, Music, Image as ImageIcon } from 'lucide-react'
+import { SITE } from '../config/site'
 
 const navItems = [
   { label: 'Video', icon: Video, to: '/', match: ['/', '/video-downloader', '/reels-downloader', '/story-downloader', '/facebook-downloader'] },
@@ -20,8 +21,9 @@ export default function Header() {
               <path d="M5 6H2M3 9H1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
             <div className="text-xl sm:text-2xl font-black tracking-tighter text-slate-900 leading-none">
-              Fastvideo<span className="text-gradient">save</span>
-              <span className="text-slate-400 text-sm font-bold">.net</span>
+              <span className="text-blue-600">{SITE.brandPart1}</span>
+              <span className="text-gradient">{SITE.brandPart2}</span>
+              <span className="text-slate-400 text-sm font-bold">{SITE.brandPart3}</span>
             </div>
           </Link>
 
@@ -37,13 +39,11 @@ export default function Header() {
                       active ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-900'
                     }`}
                   >
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        active
-                          ? 'bg-indigo-50 text-indigo-600'
-                          : 'bg-transparent text-slate-400 group-hover/nav:bg-slate-50 group-hover/nav:text-slate-500'
-                      }`}
-                    >
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                      active
+                        ? 'bg-indigo-50 text-indigo-600'
+                        : 'bg-transparent text-slate-400 group-hover/nav:bg-slate-50 group-hover/nav:text-slate-500'
+                    }`}>
                       <Icon className="w-5 h-5" strokeWidth={2} />
                     </div>
                     <span className="hidden sm:inline ml-2 font-bold text-sm tracking-tight">
