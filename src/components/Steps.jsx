@@ -1,34 +1,41 @@
 export default function Steps({
-  steps = ['Copy Link of the video.', 'Paste Link into input box.', 'Tap "Download Video" button.'],
+  steps = [
+    'Copy Link of the video.',
+    'Paste Link into Input box.',
+    'Tap "Download Video" button.',
+  ],
   title = 'Steps to Download Reels From Instagram',
-  subtitle = "Here's a quick and easy way to do it:",
 }) {
+  const borderColors = ['border-indigo-200', 'border-purple-200', 'border-pink-200']
+  const textColors = ['text-indigo-600', 'text-purple-600', 'text-pink-600']
+
   return (
-    <section className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-      <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-          {title}
-        </h2>
-        <p className="mt-2 text-xs text-slate-500 sm:text-sm">{subtitle}</p>
-
-        <div className="relative mt-12">
-          {/* Dashed connecting line */}
-          <div className="absolute left-[16.66%] right-[16.66%] top-5 hidden border-t-2 border-dashed border-brand-200 sm:block" />
-
-          <div className="grid gap-8 sm:grid-cols-3 sm:gap-4">
-            {steps.map((step, i) => (
-              <div key={i} className="relative flex flex-col items-center">
-                <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-brand-400 bg-white text-sm font-bold text-brand-600">
-                  {i + 1}
-                </div>
-                <p className="mt-4 max-w-[180px] text-[11px] leading-relaxed text-slate-500 sm:text-xs">
-                  {step}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className="w-full mt-24 mb-12">
+      <div className="text-center mb-12">
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">{title}</h2>
+        <p className="text-slate-600 max-w-2xl mx-auto">
+          Here's a quick and easy way to do it:
+        </p>
       </div>
-    </section>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative">
+        {/* Gradient connecting line */}
+        <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent z-0" />
+
+        {steps.map((step, i) => (
+          <div
+            key={i}
+            className="relative z-10 flex flex-col items-center text-center p-4 rounded-2xl hover:bg-white/40 transition-colors duration-300"
+          >
+            <div
+              className={`w-16 h-16 rounded-full bg-white border-2 ${borderColors[i]} flex items-center justify-center text-xl font-bold ${textColors[i]} mb-4 shadow-sm`}
+            >
+              {i + 1}
+            </div>
+            <p className="text-sm text-slate-600 font-medium">{step}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
