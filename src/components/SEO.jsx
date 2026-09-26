@@ -1,8 +1,8 @@
 import { Helmet } from 'react-helmet-async'
+import { SITE } from '../config/site'
 
-export default function SEO({ title, description, keywords, canonical }) {
-  const site = 'Fastvideosave.net'
-  const fullTitle = title ? `${title} - ${site}` : site
+export default function SEO({ title, description, keywords, canonical, type = 'website' }) {
+  const fullTitle = title ? `${title} - ${SITE.domain}` : SITE.domain
   const url = canonical || (typeof window !== 'undefined' ? window.location.href : '')
 
   return (
@@ -14,9 +14,9 @@ export default function SEO({ title, description, keywords, canonical }) {
       <link rel="canonical" href={url} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />
-      <meta property="og:site_name" content={site} />
+      <meta property="og:site_name" content={SITE.domain} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
@@ -24,8 +24,8 @@ export default function SEO({ title, description, keywords, canonical }) {
         {JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'WebApplication',
-          name: site,
-          url: 'https://fastvideosave.net',
+          name: SITE.domain,
+          url: SITE.url,
           description,
           applicationCategory: 'MultimediaApplication',
           operatingSystem: 'Web',
