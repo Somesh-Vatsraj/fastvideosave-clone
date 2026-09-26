@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Link as LinkIcon, Clipboard, Loader2, AlertTriangle } from 'lucide-react'
 import { SITE } from '../config/site'
 
@@ -11,12 +12,11 @@ export default function Hero({
   isLoading,
   error,
 }) {
-  // Proper parser: <gradient>...</gradient> ko gradient span me convert karta hai
+  // Parser: <gradient>...</gradient> ko gradient span me convert karta hai
   const renderHeading = () => {
     const parts = heading.split(/(<gradient>.*?<\/gradient>)/g)
 
     return parts.map((part, i) => {
-      // Check if this part has <gradient> tags
       const match = part.match(/^<gradient>(.*?)<\/gradient>$/)
       if (match) {
         return (
@@ -25,7 +25,6 @@ export default function Hero({
           </span>
         )
       }
-      // Normal text
       return <span key={i}>{part}</span>
     })
   }
@@ -41,6 +40,7 @@ export default function Hero({
 
   return (
     <div className="relative overflow-hidden">
+      {/* Background blur */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="relative px-4 py-6 md:py-12 max-w-5xl mx-auto flex flex-col items-center">
@@ -62,6 +62,7 @@ export default function Hero({
               <div className="flex items-center justify-center pl-4 pr-2 transition-colors duration-300 text-slate-400 group-focus-within:text-indigo-500">
                 <LinkIcon className="w-5 h-5" />
               </div>
+
               <input
                 type="url"
                 name="url"
@@ -71,6 +72,7 @@ export default function Hero({
                 className="flex-1 bg-transparent placeholder-slate-400 font-medium h-14 px-2 text-base md:text-lg focus:outline-none w-full transition-colors text-slate-900"
                 required
               />
+
               <div className="flex items-center gap-2 pr-1">
                 <button
                   type="button"
@@ -88,14 +90,15 @@ export default function Hero({
               </div>
             </form>
 
+            {/* Report an issue — FIXED to /contact */}
             <div className="flex justify-center mt-4">
-              <a
-                href="/contact-us"
+              <Link
+                to="/contact"
                 className="text-xs text-slate-400 hover:text-indigo-500 transition-colors duration-200 flex items-center gap-1.5"
               >
                 <AlertTriangle className="w-3.5 h-3.5" />
                 Report an issue
-              </a>
+              </Link>
             </div>
 
             {error && <p className="mt-3 text-sm text-red-500 text-center">{error}</p>}
@@ -103,7 +106,9 @@ export default function Hero({
         </div>
 
         <p className="text-xs text-slate-500 mt-6 max-w-xl mx-auto leading-relaxed text-center">
-          {SITE.domain} is an online free and fast tool which helps you to download instagram reels video or to save reels video to your device. You can save any reels videos to your phone or computer and view them offline anytime.
+          {SITE.domain} is an online free and fast tool which helps you to download instagram
+          reels video or to save reels video to your device. You can save any reels videos to
+          your phone or computer and view them offline anytime.
         </p>
       </div>
     </div>
