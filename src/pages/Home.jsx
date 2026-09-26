@@ -4,12 +4,13 @@ import Hero from '../components/Hero'
 import ResultCard from '../components/ResultCard'
 import Steps from '../components/Steps'
 import HowItWorks from '../components/HowItWorks'
+import InfoCards from '../components/InfoCards'
+import WhyUse from '../components/WhyUse'
 import FAQ from '../components/FAQ'
+import DMCA from '../components/DMCA'
 import useDownloader from '../hooks/useDownloader'
-import { tools } from '../data/tools'
 
 export default function Home() {
-  const tool = tools[0] // reels-downloader
   const { url, setUrl, isLoading, mediaData, error, submit, reset } = useDownloader('Instagram', 'video')
 
   return (
@@ -21,10 +22,8 @@ export default function Home() {
         canonical="https://fastvideosave.net/"
       />
 
+      {/* 1. Hero */}
       <Hero
-        heading={tool.heading}
-        subtitle={tool.subtitle}
-        placeholder={tool.placeholder}
         url={url}
         setUrl={setUrl}
         onSubmit={submit}
@@ -32,20 +31,46 @@ export default function Home() {
         error={error}
       />
 
+      {/* 2. Result card (only shows after fetch) */}
       <ResultCard data={mediaData} onReset={reset} />
 
-      <AdBanner slot="1111111111" className="mx-auto max-w-3xl px-4 pb-6" />
-
-      <div className="mx-auto max-w-3xl px-4 pb-6 text-center">
-        <p className="text-xs leading-relaxed text-slate-500">{tool.description}</p>
+      {/* Faint watermark spacer + description */}
+      <div className="relative px-4 pb-4 pt-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-[11px] leading-relaxed text-slate-500 sm:text-xs">
+            Fastvideosave.net is an online free and fast tool which helps you to download instagram reels
+            video or to save reels video to your device. You can save any reels videos to your phone or
+            computer and view them offline anytime.
+          </p>
+        </div>
       </div>
 
-      <Steps steps={tool.steps} title="Steps to Download Reels From Instagram" />
+      {/* Ad */}
+      <AdBanner slot="1111111111" className="mx-auto max-w-3xl px-4 pb-4" />
 
-      <AdBanner slot="2222222222" className="mx-auto max-w-3xl px-4 pb-6" />
+      {/* 3. Steps */}
+      <Steps />
 
+      {/* 4. How It Works */}
       <HowItWorks platform="Instagram" />
+
+      {/* Ad */}
+      <AdBanner slot="2222222222" className="mx-auto max-w-3xl px-4 py-4" />
+
+      {/* 5. Two info cards */}
+      <InfoCards />
+
+      {/* 6. Why use section */}
+      <WhyUse />
+
+      {/* Ad */}
+      <AdBanner slot="3333333333" className="mx-auto max-w-3xl px-4 pb-4" />
+
+      {/* 7. FAQ (2 column) */}
       <FAQ />
+
+      {/* 8. DMCA dark card */}
+      <DMCA />
     </>
   )
 }
