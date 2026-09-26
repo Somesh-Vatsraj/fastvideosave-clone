@@ -2,7 +2,7 @@ import { Link as LinkIcon, Clipboard, Loader2, AlertTriangle } from 'lucide-reac
 import { SITE } from '../config/site'
 
 export default function Hero({
-  heading = 'Instagram Reels Download',
+  heading = 'Instagram <gradient>Reels</gradient> Download',
   subtitle = 'Fastest tool to download reels video:',
   placeholder = 'Paste Link Here...',
   url,
@@ -11,17 +11,23 @@ export default function Hero({
   isLoading,
   error,
 }) {
+  // Proper parser: <gradient>...</gradient> ko gradient span me convert karta hai
   const renderHeading = () => {
-    const parts = heading.split(' ')
-    if (parts.length >= 2) {
-      return (
-        <>
-          <span className="text-gradient">{parts[0]} {parts[1]}</span>{' '}
-          {parts.slice(2).join(' ')}
-        </>
-      )
-    }
-    return heading
+    const parts = heading.split(/(<gradient>.*?<\/gradient>)/g)
+
+    return parts.map((part, i) => {
+      // Check if this part has <gradient> tags
+      const match = part.match(/^<gradient>(.*?)<\/gradient>$/)
+      if (match) {
+        return (
+          <span key={i} className="text-gradient">
+            {match[1]}
+          </span>
+        )
+      }
+      // Normal text
+      return <span key={i}>{part}</span>
+    })
   }
 
   const handlePaste = async () => {
@@ -70,8 +76,13 @@ export default function Hero({
                   type="button"
                   onClick={handlePaste}
                   className="flex items-center justify-center gap-2 px-6 h-12 font-semibold rounded-full transition-all duration-300 bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                  aria-label="Paste URL"
                 >
-                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Clipboard className="w-5 h-5" />}
+                  {isLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Clipboard className="w-5 h-5" />
+                  )}
                   <span>Paste</span>
                 </button>
               </div>
