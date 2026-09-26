@@ -1,4 +1,5 @@
 import { Link as LinkIcon, Clipboard, Loader2, AlertTriangle } from 'lucide-react'
+import { SITE } from '../config/site'
 
 export default function Hero({
   heading = 'Instagram Reels Download',
@@ -11,7 +12,6 @@ export default function Hero({
   error,
 }) {
   const renderHeading = () => {
-    // Gradient on "Instagram Reels" part
     const parts = heading.split(' ')
     if (parts.length >= 2) {
       return (
@@ -35,7 +35,6 @@ export default function Hero({
 
   return (
     <div className="relative overflow-hidden">
-      {/* Background blur */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="relative px-4 py-6 md:py-12 max-w-5xl mx-auto flex flex-col items-center">
@@ -71,13 +70,8 @@ export default function Hero({
                   type="button"
                   onClick={handlePaste}
                   className="flex items-center justify-center gap-2 px-6 h-12 font-semibold rounded-full transition-all duration-300 bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
-                  aria-label="Paste URL"
                 >
-                  {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Clipboard className="w-5 h-5" />
-                  )}
+                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Clipboard className="w-5 h-5" />}
                   <span>Paste</span>
                 </button>
               </div>
@@ -98,7 +92,7 @@ export default function Hero({
         </div>
 
         <p className="text-xs text-slate-500 mt-6 max-w-xl mx-auto leading-relaxed text-center">
-          Fastvideosave.net is an online free and fast tool which helps you to download instagram reels video or to save reels video to your device. You can save any reels videos to your phone or computer and view them offline anytime.
+          {SITE.domain} is an online free and fast tool which helps you to download instagram reels video or to save reels video to your device. You can save any reels videos to your phone or computer and view them offline anytime.
         </p>
       </div>
     </div>
