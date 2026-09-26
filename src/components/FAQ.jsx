@@ -17,7 +17,7 @@ const faqs = [
   },
   {
     q: 'Where are the downloaded files saved?',
-    a: "By default, files are saved in your device's Downloads folder. On mobile, they are usually saved directly to your Gallery or Photos app.",
+    a: "By default, files are saved in your device's 'Downloads' folder. On mobile, they are usually saved directly to your Gallery or Photos app.",
   },
   {
     q: 'Do I need to provide my Instagram login details?',
@@ -33,14 +33,14 @@ const faqs = [
   },
   {
     q: 'Do you store my downloaded videos?',
-    a: 'No, we do not store any of your downloaded videos. All downloads are processed in real-time and served directly from Instagram\'s servers.',
+    a: "No, we do not store any of your downloaded videos. All downloads are processed in real-time and served directly from Instagram's servers.",
   },
   {
     q: 'Does Fastvideosave work on Android?',
     a: 'Yes, our website is fully responsive and works seamlessly on Android devices.',
   },
   {
-    q: 'Can I download videos using my phone\'s browser?',
+    q: "Can I download videos using my phone's browser?",
     a: 'Yes, you can download videos using any mobile browser that supports video downloads.',
   },
   {
@@ -51,36 +51,30 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <section className="px-4 pb-14 sm:px-6 sm:pb-20 lg:px-8">
-      <div className="mx-auto max-w-5xl">
-        <div className="text-center">
-          <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-            Frequently Asked Questions
-          </h2>
-          <p className="mt-2 text-xs text-slate-500 sm:text-sm">
-            Everything you need to know about Fastvideosave
-          </p>
-        </div>
-
-        <div className="mt-10 grid gap-3 sm:grid-cols-2">
-          {faqs.map((f, i) => (
-            <div
-              key={i}
-              className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 transition hover:border-slate-200 hover:bg-white sm:p-5"
-            >
-              <h3 className="flex items-start gap-2.5 text-[12px] font-bold text-slate-800 sm:text-[13px]">
-                <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border border-brand-400 text-[9px] font-bold text-brand-600">
-                  ?
-                </span>
-                {f.q}
-              </h3>
-              <p className="mt-2 pl-6 text-[11px] leading-relaxed text-slate-500 sm:text-xs">
-                {f.a}
-              </p>
-            </div>
-          ))}
-        </div>
+    <div className="space-y-8">
+      <div className="text-center mb-10">
+        <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+          Frequently Asked Questions
+        </h3>
+        <p className="text-slate-600">Everything you need to know about Fastvideosave</p>
       </div>
-    </section>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {faqs.map((f, i) => (
+          <div
+            key={i}
+            className="glass-panel p-6 rounded-2xl hover:bg-white/60 transition-all duration-300"
+          >
+            <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-start gap-3">
+              <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
+                ?
+              </span>
+              {f.q}
+            </h4>
+            <p className="text-sm text-slate-600 leading-relaxed pl-9">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
