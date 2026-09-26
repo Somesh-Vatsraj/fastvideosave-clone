@@ -1,4 +1,5 @@
 import { Shield } from 'lucide-react'
+import { SITE } from '../config/site'
 
 export default function DMCA() {
   return (
@@ -9,7 +10,7 @@ export default function DMCA() {
         DMCA Compliance
       </h3>
       <p className="text-sm text-slate-300 leading-relaxed">
-        Fastvideosave.net complies with 17 U.S.C. § 512 and the Digital Millennium Copyright Act
+        {SITE.domain} complies with 17 U.S.C. § 512 and the Digital Millennium Copyright Act
         (DMCA). It is our policy to respond to any infringement notices and take appropriate
         actions. If your copyrighted material has been posted on the site and you want this
         material removed, please contact us.
