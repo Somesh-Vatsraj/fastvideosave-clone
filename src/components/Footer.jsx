@@ -12,28 +12,31 @@ const toolsLinks = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-100 bg-white px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="mt-4 border-t border-slate-100 bg-white px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           {/* Brand */}
           <div>
-            <Link to="/" className="flex items-center gap-1 text-lg">
+            <Link to="/" className="flex items-center gap-0.5 text-base">
               <span className="font-extrabold text-blue-600">Fast</span>
               <span className="font-extrabold text-brand-700">videosave</span>
               <span className="font-semibold text-slate-400">.net</span>
             </Link>
-            <p className="mt-3 text-xs leading-relaxed text-slate-500">
-              Audio and video and photo tools for Instagram & Facebook. Free, fast, no login.
+            <p className="mt-3 max-w-xs text-[11px] leading-relaxed text-slate-500 sm:text-xs">
+              Fastvideosave is a super-fast web based tool to download Instagram reels, videos,
+              photos, and audio in original quality — simple, fast, and free.
             </p>
           </div>
 
           {/* Tools */}
           <div>
-            <h3 className="text-sm font-bold text-slate-800">Tools</h3>
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-800 sm:text-xs">
+              Tools
+            </h3>
             <ul className="mt-3 space-y-2">
               {toolsLinks.map((t) => (
                 <li key={t.to}>
-                  <Link to={t.to} className="text-xs text-slate-500 transition hover:text-brand-600">
+                  <Link to={t.to} className="text-[11px] text-slate-500 transition hover:text-brand-600 sm:text-xs">
                     {t.label}
                   </Link>
                 </li>
@@ -43,28 +46,50 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="text-sm font-bold text-slate-800">Legal</h3>
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-800 sm:text-xs">
+              Legal
+            </h3>
             <ul className="mt-3 space-y-2">
-              <li><Link to="/privacy-policy" className="text-xs text-slate-500 hover:text-brand-600">Privacy Policy</Link></li>
-              <li><Link to="/terms-of-service" className="text-xs text-slate-500 hover:text-brand-600">Terms of Service</Link></li>
+              <li>
+                <Link to="/privacy-policy" className="text-[11px] text-slate-500 transition hover:text-brand-600 sm:text-xs">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms-of-service" className="text-[11px] text-slate-500 transition hover:text-brand-600 sm:text-xs">
+                  Terms of Service
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h3 className="text-sm font-bold text-slate-800">Support</h3>
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-800 sm:text-xs">
+              Support
+            </h3>
             <ul className="mt-3 space-y-2">
-              <li><Link to="/contact" className="text-xs text-slate-500 hover:text-brand-600">Contact Us</Link></li>
+              <li>
+                <Link to="/contact" className="text-[11px] text-slate-500 transition hover:text-brand-600 sm:text-xs">
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-10 border-t border-slate-100 pt-6">
-          <p className="text-center text-[11px] leading-relaxed text-slate-400">
-            Fastvideosave.net is not connected to Instagram™ or any other social platforms. We do not host or store files on our servers. All trademarks belong to their respective owners.
-          </p>
-          <p className="mt-3 text-center text-[11px] text-slate-400">
-            © {new Date().getFullYear()} Fastvideosave.net — All rights reserved.
+        {/* Bottom disclaimer */}
+        <div className="mt-10 border-t border-slate-100 pt-5">
+          <div className="flex flex-col gap-3 text-[10px] leading-relaxed text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:text-[11px]">
+            <p className="max-w-2xl">
+              Fastvideosave.net is not connected to Instagram™ or any other social platforms. We do
+              not host or store files on our servers; all content belongs to its original owners.
+            </p>
+            <p className="whitespace-nowrap">© {new Date().getFullYear()} Fastvideosave — All Rights Reserved.</p>
+          </div>
+          <p className="mt-3 text-[10px] leading-relaxed text-slate-400 sm:text-[11px]">
+            Please do not use our tool for copyrighted or restricted content. We comply with DMCA
+            policies and respond to all valid infringement notices.
           </p>
         </div>
       </div>
