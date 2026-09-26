@@ -16,6 +16,7 @@ export default function HowItWorks({ platform = 'Instagram' }) {
             <h3 className="text-2xl sm:text-3xl font-bold text-slate-900">
               How {platform} Downloader Works?
             </h3>
+
             <p className="text-base text-slate-600 leading-relaxed">
               An {platform} reels downloader is a tool or software that allows you to download
               Reels, Video and Photos from {platform} without watermark by simply entering the
@@ -24,8 +25,13 @@ export default function HowItWorks({ platform = 'Instagram' }) {
 
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {bullets.map((b, i) => (
-                <li key={i} className="flex items-start gap-3 text-slate-700 font-semibold text-sm">
-                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">✓</span>
+                <li
+                  key={i}
+                  className="flex items-start gap-3 text-slate-700 font-semibold text-sm"
+                >
+                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">
+                    ✓
+                  </span>
                   <span>{b}</span>
                 </li>
               ))}
@@ -50,11 +56,6 @@ export default function HowItWorks({ platform = 'Instagram' }) {
                   height="500"
                   loading="lazy"
                   className="w-full h-auto rounded-xl object-cover shadow-sm group-hover:scale-[1.02] transition-transform duration-500"
-                  onError={(e) => {
-                    e.target.style.display = 'none'
-                    e.target.parentElement.innerHTML =
-                      '<div class="aspect-square flex items-center justify-center bg-gradient-to-br from-indigo-100 to-pink-100 rounded-xl text-5xl">📱</div>'
-                  }}
                 />
               </div>
             </div>
