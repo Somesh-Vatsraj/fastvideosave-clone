@@ -34,7 +34,7 @@ export default function Home() {
       {/* 2. Result card (only shows after fetch) */}
       <ResultCard data={mediaData} onReset={reset} />
 
-      {/* Faint watermark spacer + description */}
+      {/* Description text */}
       <div className="relative px-4 pb-4 pt-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-[11px] leading-relaxed text-slate-500 sm:text-xs">
