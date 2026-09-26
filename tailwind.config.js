@@ -24,8 +24,6 @@ export default {
       animation: {
         'fade-in': 'fadeIn 0.4s ease-out',
         'slide-up': 'slideUp 0.4s ease-out',
-        'bounce-slow': 'bounce 1.5s infinite',
-        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         fadeIn: {
@@ -36,9 +34,6 @@ export default {
           '0%': { transform: 'translateY(15px)', opacity: 0 },
           '100%': { transform: 'translateY(0)', opacity: 1 },
         },
-      },
-      backgroundImage: {
-        'radial-hero': 'radial-gradient(circle at 50% -20%, #e0e7ff, #f8fafc 40%, #fff)',
       },
     },
   },
