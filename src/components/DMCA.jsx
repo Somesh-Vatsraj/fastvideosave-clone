@@ -1,4 +1,5 @@
 import { Shield } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { SITE } from '../config/site'
 
 export default function DMCA() {
@@ -13,7 +14,11 @@ export default function DMCA() {
         {SITE.domain} complies with 17 U.S.C. § 512 and the Digital Millennium Copyright Act
         (DMCA). It is our policy to respond to any infringement notices and take appropriate
         actions. If your copyrighted material has been posted on the site and you want this
-        material removed, please contact us.
+        material removed, please{' '}
+        <Link to="/contact" className="text-indigo-400 hover:text-indigo-300 underline">
+          contact us
+        </Link>
+        .
       </p>
     </div>
   )
