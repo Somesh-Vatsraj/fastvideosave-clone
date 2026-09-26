@@ -1,23 +1,19 @@
 export default function WhyUse() {
   return (
-    <section className="px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8">
-      <div className="mx-auto max-w-3xl">
-        <div className="rounded-2xl border border-purple-100/60 bg-purple-50/50 px-6 py-8 text-center sm:px-10 sm:py-10">
-          <h2 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">
-            Why use Fastvideosave.net?
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-xs leading-relaxed text-slate-600 sm:text-sm">
-            As Instagram doesn't allow to download reels directly from the app or website online,
-            here Fastvideosave.net web based tool helps you to do that in high quality formats.
-          </p>
-
-          <div className="mx-auto mt-6 max-w-xl rounded-xl border border-slate-200 bg-white px-4 py-3">
-            <p className="text-[11px] text-slate-500 sm:text-xs">
-              Note: Downloaded video/audio cannot be used for commercial purposes.
-            </p>
-          </div>
-        </div>
+    <div className="bg-indigo-50/50 border border-indigo-100 p-8 rounded-3xl shadow-sm">
+      <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center">
+        Why use Fastvideosave.net?
+      </h3>
+      <p className="text-base text-slate-600 leading-relaxed text-center mb-8">
+        As Instagram doesn't allow to download reels directly from the app or website online,
+        here <strong>Fastvideosave.net</strong> web based tool helps you to do that in high
+        quality formats.
+      </p>
+      <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-indigo-100 text-center">
+        <p className="text-sm text-slate-500 max-w-2xl mx-auto">
+          <strong>Note:</strong> Downloaded video/audio cannot be used for commercial purposes.
+        </p>
       </div>
-    </section>
+    </div>
   )
 }
