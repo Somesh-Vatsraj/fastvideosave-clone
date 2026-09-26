@@ -23,7 +23,7 @@ export default function ToolPage({ type }) {
 
   const { url, setUrl, isLoading, mediaData, error, submit, reset } = downloader
 
-  // Clean steps title — Facebook ke liye special case
+  // Steps title — Facebook ke liye special case
   const stepsTitle =
     tool.platform === 'Facebook'
       ? `Steps to Download ${tool.title.replace(' Downloader', '')}`
@@ -51,7 +51,7 @@ export default function ToolPage({ type }) {
 
       <ResultCard data={mediaData} onReset={reset} />
 
-      {/* Ad + watermark spacer */}
+      {/* Watermark spacer + Ad */}
       <div className="relative px-4 pb-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="min-h-[280px] sm:min-h-[336px] w-full relative flex items-center justify-center bg-transparent my-4">
