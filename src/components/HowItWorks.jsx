@@ -1,3 +1,5 @@
+import { SITE } from '../config/site'
+
 const bullets = [
   "Original quality without watermark or logo, which most of the tools out there can't.",
   'Download Reels video in gallery on any device that you want: mobile, iPhone, iPad, PC, or tablet.',
@@ -23,9 +25,7 @@ export default function HowItWorks({ platform = 'Instagram' }) {
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {bullets.map((b, i) => (
                 <li key={i} className="flex items-start gap-3 text-slate-700 font-semibold text-sm">
-                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">
-                    ✓
-                  </span>
+                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">✓</span>
                   <span>{b}</span>
                 </li>
               ))}
@@ -45,11 +45,10 @@ export default function HowItWorks({ platform = 'Instagram' }) {
               <div className="relative bg-white/80 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-white/60">
                 <img
                   src="/images/how-instagram-downloader-works.jpg"
-                  alt={`How ${platform} Reels Downloader Works on Smartphone and PC`}
+                  alt={`How ${SITE.name} Works on Smartphone and PC`}
                   width="500"
                   height="500"
                   loading="lazy"
-                  decoding="async"
                   className="w-full h-auto rounded-xl object-cover shadow-sm group-hover:scale-[1.02] transition-transform duration-500"
                   onError={(e) => {
                     e.target.style.display = 'none'
