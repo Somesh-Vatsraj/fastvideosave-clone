@@ -9,6 +9,7 @@ import WhyUse from '../components/WhyUse'
 import FAQ from '../components/FAQ'
 import DMCA from '../components/DMCA'
 import useDownloader from '../hooks/useDownloader'
+import { SITE } from '../config/site'
 
 export default function Home() {
   const { url, setUrl, isLoading, mediaData, error, submit, reset } = useDownloader('Instagram', 'video')
@@ -17,9 +18,9 @@ export default function Home() {
     <>
       <SEO
         title="Instagram Reels Downloader — Save Reels & Videos"
-        description="Download Instagram reels in High Quality with our user-friendly tool. Save your favorite videos in seconds – no app required. Try it now!"
+        description={`Download Instagram reels in High Quality with our user-friendly tool. Save your favorite videos in seconds – no app required. Try ${SITE.name} now!`}
         keywords="instagram reels download, download instagram video, save reels, no watermark downloader"
-        canonical="https://fastvideosave.net/"
+        canonical={`${SITE.url}/`}
       />
 
       <Hero
@@ -32,12 +33,13 @@ export default function Home() {
 
       <ResultCard data={mediaData} onReset={reset} />
 
+      {/* Watermark spacer + Ad */}
       <div className="relative px-4 pb-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="min-h-[280px] sm:min-h-[336px] w-full relative flex items-center justify-center bg-transparent my-4">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.03] z-0">
               <span className="text-4xl sm:text-7xl font-bold tracking-tight text-slate-900 whitespace-nowrap">
-                Fastvideosave.net
+                {SITE.domain}
               </span>
             </div>
             <div className="relative z-10 w-full flex justify-center">
