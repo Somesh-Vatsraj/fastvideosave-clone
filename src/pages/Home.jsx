@@ -16,13 +16,12 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="Instagram Reels Download - No Watermark, HD, Free"
-        description="Download Instagram Reels, Videos & Photos without watermark. Fastvideosave.net is the fastest free tool - No login, high quality, unlimited downloads."
-        keywords="instagram reels download, download instagram video, save reels, no watermark downloader, fastvideosave"
+        title="Instagram Reels Downloader — Save Reels & Videos"
+        description="Download Instagram reels in High Quality with our user-friendly tool. Save your favorite videos in seconds – no app required. Try it now!"
+        keywords="instagram reels download, download instagram video, save reels, no watermark downloader"
         canonical="https://fastvideosave.net/"
       />
 
-      {/* 1. Hero */}
       <Hero
         url={url}
         setUrl={setUrl}
@@ -31,46 +30,44 @@ export default function Home() {
         error={error}
       />
 
-      {/* 2. Result card (only shows after fetch) */}
       <ResultCard data={mediaData} onReset={reset} />
 
-      {/* Description text */}
-      <div className="relative px-4 pb-4 pt-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-[11px] leading-relaxed text-slate-500 sm:text-xs">
-            Fastvideosave.net is an online free and fast tool which helps you to download instagram reels
-            video or to save reels video to your device. You can save any reels videos to your phone or
-            computer and view them offline anytime.
-          </p>
+      <div className="relative px-4 pb-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto">
+          <div className="min-h-[280px] sm:min-h-[336px] w-full relative flex items-center justify-center bg-transparent my-4">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.03] z-0">
+              <span className="text-4xl sm:text-7xl font-bold tracking-tight text-slate-900 whitespace-nowrap">
+                Fastvideosave.net
+              </span>
+            </div>
+            <div className="relative z-10 w-full flex justify-center">
+              <AdBanner slot="5900026060" className="w-full" />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Ad */}
-      <AdBanner slot="1111111111" className="mx-auto max-w-3xl px-4 pb-4" />
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Steps />
 
-      {/* 3. Steps */}
-      <Steps />
+        <div className="w-full max-w-2xl h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent my-20 mx-auto" />
 
-      {/* 4. How It Works */}
-      <HowItWorks platform="Instagram" />
+        <HowItWorks platform="Instagram" />
 
-      {/* Ad */}
-      <AdBanner slot="2222222222" className="mx-auto max-w-3xl px-4 py-4" />
+        <div className="max-w-4xl mx-auto space-y-12 mb-24">
+          <AdBanner slot="2222222222" className="w-full" />
 
-      {/* 5. Two info cards */}
-      <InfoCards />
+          <InfoCards />
 
-      {/* 6. Why use section */}
-      <WhyUse />
+          <WhyUse />
 
-      {/* Ad */}
-      <AdBanner slot="3333333333" className="mx-auto max-w-3xl px-4 pb-4" />
+          <AdBanner slot="3333333333" className="w-full" />
 
-      {/* 7. FAQ (2 column) */}
-      <FAQ />
+          <FAQ />
 
-      {/* 8. DMCA dark card */}
-      <DMCA />
+          <DMCA />
+        </div>
+      </div>
     </>
   )
 }
