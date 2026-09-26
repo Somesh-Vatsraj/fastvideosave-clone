@@ -12,12 +12,14 @@ import NotFound from './pages/NotFound'
 export default function App() {
   const { pathname } = useLocation()
 
-  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-1">
+      <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/reels-downloader" element={<ToolPage type="reels" />} />
