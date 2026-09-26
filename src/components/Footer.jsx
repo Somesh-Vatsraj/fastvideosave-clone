@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
 const toolsLinks = [
-  { label: 'Reels Downloader', to: '/reels-downloader' },
+  { label: 'Reels Downloader', to: '/' },
   { label: 'Video Downloader', to: '/video-downloader' },
   { label: 'Photo Downloader', to: '/photo-downloader' },
   { label: 'Audio Downloader', to: '/audio-downloader' },
@@ -12,75 +12,81 @@ const toolsLinks = [
 
 export default function Footer() {
   return (
-    <footer className="mt-4 border-t border-slate-100 bg-white/60 px-4 py-10 backdrop-blur-sm sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-          <div>
-            <Link to="/" className="flex items-center gap-0.5 text-base">
-              <span className="font-extrabold text-blue-600">Fast</span>
-              <span className="font-extrabold text-indigo-600">videosave</span>
-              <span className="font-semibold text-slate-400">.net</span>
+    <footer className="border-t border-slate-200 bg-white mt-16">
+      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-12">
+          <div className="col-span-1 md:col-span-1">
+            <Link to="/" className="flex items-center group mb-4">
+              <svg className="w-6 h-6 text-indigo-600 mr-1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M5 6H2M3 9H1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              <h2 className="text-xl font-black tracking-tighter text-slate-900 leading-none">
+                Fastvideo<span className="text-gradient">save</span>
+                <span className="text-slate-400 text-sm font-bold">.net</span>
+              </h2>
             </Link>
-            <p className="mt-3 max-w-xs text-[11px] leading-relaxed text-slate-500 sm:text-xs">
+            <p className="text-sm text-slate-600 leading-relaxed">
               Fastvideosave is a super-fast web based tool to download Instagram reels, videos,
               photos, and audio in original quality — simple, fast, and free.
             </p>
           </div>
 
-          <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-800 sm:text-xs">Tools</h3>
-            <ul className="mt-3 space-y-2">
-              {toolsLinks.map((t) => (
-                <li key={t.to}>
-                  <Link to={t.to} className="text-[11px] text-slate-500 transition hover:text-indigo-600 sm:text-xs">
-                    {t.label}
+          <div className="col-span-1 md:col-span-2 flex flex-col md:flex-row gap-8 md:gap-16 md:justify-end">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900 tracking-wider uppercase mb-4">Tools</h3>
+              <ul className="space-y-3">
+                {toolsLinks.map((t) => (
+                  <li key={t.to}>
+                    <Link
+                      to={t.to}
+                      className="text-sm text-slate-600 hover:text-indigo-600 transition-colors"
+                    >
+                      {t.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900 tracking-wider uppercase mb-4">Legal</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link to="/privacy-policy" className="text-sm text-slate-600 hover:text-indigo-600 transition-colors">
+                    Privacy Policy
                   </Link>
                 </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-800 sm:text-xs">Legal</h3>
-            <ul className="mt-3 space-y-2">
-              <li>
-                <Link to="/privacy-policy" className="text-[11px] text-slate-500 transition hover:text-indigo-600 sm:text-xs">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms-of-service" className="text-[11px] text-slate-500 transition hover:text-indigo-600 sm:text-xs">
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-800 sm:text-xs">Support</h3>
-            <ul className="mt-3 space-y-2">
-              <li>
-                <Link to="/contact" className="text-[11px] text-slate-500 transition hover:text-indigo-600 sm:text-xs">
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
+                <li>
+                  <Link to="/terms-of-service" className="text-sm text-slate-600 hover:text-indigo-600 transition-colors">
+                    Terms of Service
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900 tracking-wider uppercase mb-4">Support</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link to="/contact" className="text-sm text-slate-600 hover:text-indigo-600 transition-colors">
+                    Contact Us
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <div className="mt-10 border-t border-slate-100 pt-5">
-          <div className="flex flex-col gap-3 text-[10px] leading-relaxed text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:text-[11px]">
-            <p className="max-w-2xl">
-              Fastvideosave.net is not connected to Instagram™ or any other social platforms. We
-              do not host or store files on our servers; all content belongs to its original owners.
-            </p>
-            <p className="whitespace-nowrap">
-              © {new Date().getFullYear()} Fastvideosave — All Rights Reserved.
-            </p>
-          </div>
-          <p className="mt-3 text-[10px] leading-relaxed text-slate-400 sm:text-[11px]">
+        <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-slate-500 max-w-2xl text-center md:text-left">
+            <b>Fastvideosave.net</b> is not connected to Instagram™ or any other social platforms.
+            We do not host or store files on our servers; all content belongs to its original
+            owners.
+            <br /><br />
             Please do not use our tool for copyrighted or restricted content. We comply with DMCA
             policies and respond to all valid infringement notices.
+          </p>
+          <p className="text-xs text-slate-500 whitespace-nowrap">
+            © {new Date().getFullYear()} Fastvideosave - All Rights Reserved.
           </p>
         </div>
       </div>
