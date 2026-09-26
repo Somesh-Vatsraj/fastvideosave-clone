@@ -16,11 +16,11 @@ export default function Header() {
   const { pathname } = useLocation()
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-100 bg-white">
+    <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-0.5 text-base sm:text-[17px]">
           <span className="font-extrabold text-blue-600">Fast</span>
-          <span className="font-extrabold text-brand-700">videosave</span>
+          <span className="font-extrabold text-indigo-600">videosave</span>
           <span className="font-semibold text-slate-400">.net</span>
         </Link>
 
@@ -34,8 +34,8 @@ export default function Header() {
                 to={tab.to}
                 className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition sm:px-4 sm:py-2 sm:text-sm ${
                   active
-                    ? 'bg-white text-brand-700 shadow-sm'
-                    : 'text-slate-500 hover:text-brand-600'
+                    ? 'bg-white text-indigo-600 shadow-sm'
+                    : 'text-slate-500 hover:text-indigo-600'
                 }`}
               >
                 <Icon size={14} strokeWidth={2.2} />
