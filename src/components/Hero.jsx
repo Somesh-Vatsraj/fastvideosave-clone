@@ -14,12 +14,7 @@ export default function Hero({
     const parts = heading.split(/<gradient>|<\/gradient>/)
     return parts.map((part, i) =>
       i === 1 ? (
-        <span
-          key={i}
-          className="bg-gradient-to-r from-purple-600 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent"
-        >
-          {part}
-        </span>
+        <span key={i} className="text-gradient">{part}</span>
       ) : (
         <span key={i}>{part}</span>
       )
@@ -30,13 +25,15 @@ export default function Hero({
     try {
       const text = await navigator.clipboard.readText()
       setUrl(text)
-    } catch {}
+    } catch (err) {
+      console.error('Clipboard read failed:', err)
+    }
   }
 
   return (
     <section className="px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
       <div className="mx-auto max-w-3xl text-center">
-        <h1 className="text-[28px] font-extrabold leading-tight tracking-tight sm:text-4xl md:text-[42px]">
+        <h1 className="text-[28px] font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl md:text-[42px]">
           {renderHeading()}
         </h1>
         <p className="mx-auto mt-3 max-w-md whitespace-pre-line text-[13px] leading-relaxed text-slate-500 sm:text-[15px]">
@@ -45,7 +42,7 @@ export default function Hero({
 
         <form onSubmit={onSubmit} className="mt-7">
           <div className="mx-auto max-w-xl">
-            <div className="flex items-center rounded-full border border-slate-200 bg-white p-1 pl-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10 sm:p-1.5 sm:pl-5">
+            <div className="flex items-center rounded-full border border-slate-200 bg-white p-1 pl-4 shadow-sm transition focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/30 sm:p-1.5 sm:pl-5">
               <LinkIcon className="mr-2 flex-shrink-0 text-slate-400" size={16} />
               <input
                 type="url"
@@ -57,13 +54,9 @@ export default function Hero({
               <button
                 type="button"
                 onClick={handlePaste}
-                className="flex flex-shrink-0 items-center gap-1.5 rounded-full bg-brand-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-brand-700 sm:px-5 sm:py-2.5 sm:text-sm"
+                className="flex flex-shrink-0 items-center gap-1.5 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-95 sm:px-5 sm:py-2.5 sm:text-sm"
               >
-                {isLoading ? (
-                  <Loader2 className="animate-spin" size={14} />
-                ) : (
-                  <Clipboard size={13} />
-                )}
+                {isLoading ? <Loader2 className="animate-spin" size={14} /> : <Clipboard size={13} />}
                 <span>Paste</span>
               </button>
             </div>
