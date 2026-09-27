@@ -7,12 +7,23 @@ export default function ResultCard({ data, onReset }) {
   const isImage = data.type === 'image'
 
   const handleDownload = () => {
-    // Direct download trigger karo
     const link = document.createElement('a')
     link.href = data.downloadUrl
     link.target = '_blank'
     link.rel = 'noopener noreferrer'
     link.download = `${data.title || 'video'}.mp4`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const handleAudioDownload = () => {
+    if (!data.audioUrl) return
+    const link = document.createElement('a')
+    link.href = data.audioUrl
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    link.download = `${data.title || 'audio'}.mp3`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -42,6 +53,8 @@ export default function ResultCard({ data, onReset }) {
                         'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"%3E%3Crect fill="%23334155" width="100" height="150"/%3E%3C/svg%3E'
                     }}
                   />
+
+                  {/* Play/audio icon overlay */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/95 shadow-lg">
                       {isAudio ? (
@@ -51,6 +64,15 @@ export default function ResultCard({ data, onReset }) {
                       )}
                     </div>
                   </div>
+
+                  {/* Quality badge (top-right) */}
+                  {data.videoQuality && !isAudio && (
+                    <div className="absolute top-2 right-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-semibold text-white">
+                      {data.videoQuality}
+                    </div>
+                  )}
+
+                  {/* Duration badge (bottom-left) */}
                   {data.duration && data.duration !== '00:00' && (
                     <div className="absolute bottom-2 left-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white">
                       {data.duration}
@@ -60,12 +82,17 @@ export default function ResultCard({ data, onReset }) {
               )}
             </div>
 
-            {/* Actions */}
-            <div className="flex flex-1 flex-col gap-3">
+            {/* Details + Actions */}
+            <div className="flex flex-1 flex-col gap-3 min-w-0">
               <h3 className="line-clamp-2 text-sm font-semibold text-slate-800 sm:text-base">
                 {data.title}
               </h3>
 
+              {data.author && (
+                <p className="text-xs text-slate-500">{data.author}</p>
+              )}
+
+              {/* Main download button */}
               <button
                 onClick={handleDownload}
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-600 px-6 h-12 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
@@ -74,6 +101,18 @@ export default function ResultCard({ data, onReset }) {
                 {isImage ? 'Download Photo' : isAudio ? 'Download Audio' : 'Download Video'}
               </button>
 
+              {/* Bonus: Audio download (agar video hai aur audio bhi available hai) */}
+              {data.audioUrl && data.type === 'video' && (
+                <button
+                  onClick={handleAudioDownload}
+                  className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-indigo-500 bg-white px-6 h-12 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50"
+                >
+                  <Music size={16} />
+                  Download Audio (MP3)
+                </button>
+              )}
+
+              {/* Reset button */}
               <button
                 onClick={onReset}
                 className="flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 h-12 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
