@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Link as LinkIcon, Clipboard, Loader2, AlertTriangle } from 'lucide-react'
+import { Link as LinkIcon, Clipboard, Loader2, AlertTriangle, X } from 'lucide-react'
 import { SITE } from '../config/site'
 
 export default function Hero({
@@ -32,7 +32,7 @@ export default function Hero({
     })
   }
 
-  // Valid URL check
+  // URL supported check
   const isSupportedUrl = (value) => {
     if (!value || value.length < 15) return false
     try {
@@ -53,16 +53,16 @@ export default function Hero({
     }
   }
 
-  // Debounced auto-submit — URL explicitly pass karo
+  // Debounced auto-submit
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
 
     if (isSupportedUrl(url) && url !== lastSubmittedUrl.current && !isLoading) {
-      const currentUrl = url // capture current value
+      const currentUrl = url
       debounceRef.current = setTimeout(() => {
         if (currentUrl !== lastSubmittedUrl.current && !isLoading) {
           lastSubmittedUrl.current = currentUrl
-          onSubmit?.({ preventDefault: () => {} }, currentUrl) // ← URL pass
+          onSubmit?.({ preventDefault: () => {} }, currentUrl)
         }
       }, 800)
     }
@@ -73,29 +73,33 @@ export default function Hero({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
-  // Paste button — read clipboard → set → submit with explicit URL
+  // Paste handler
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText()
       if (!text) return
-
       const cleanUrl = text.trim()
       setUrl(cleanUrl)
       lastSubmittedUrl.current = cleanUrl
-
-      // Submit with explicit URL (no stale closure)
       onSubmit?.({ preventDefault: () => {} }, cleanUrl)
     } catch (err) {
       console.error('Clipboard read failed:', err)
     }
   }
 
-  // Enter key
+  // Clear handler — input clear + state reset
+  const handleClear = () => {
+    setUrl('')
+    lastSubmittedUrl.current = ''
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+  }
+
+  // Form submit (Enter key)
   const handleFormSubmit = (e) => {
     e.preventDefault()
     if (!url?.trim() || isLoading) return
     lastSubmittedUrl.current = url
-    onSubmit?.(e, url) // ← URL pass
+    onSubmit?.(e, url)
   }
 
   return (
@@ -131,30 +135,66 @@ export default function Hero({
                 autoComplete="off"
                 spellCheck="false"
                 disabled={isLoading}
-                className="flex-1 bg-transparent placeholder-slate-400 font-medium h-14 px-2 text-base md:text-lg focus:outline-none w-full transition-colors text-slate-900 disabled:opacity-60"
+                className="flex-1 bg-transparent placeholder-slate-400 font-medium h-14 px-2 text-base md:text-lg focus:outline-none w-full transition-colors text-slate-900 disabled:opacity-60 min-w-0"
                 required
               />
 
-              <div className="flex items-center gap-2 pr-1">
-                <button
-                  type="button"
-                  onClick={handlePaste}
-                  disabled={isLoading}
-                  className="flex items-center justify-center gap-2 px-6 h-12 font-semibold rounded-full transition-all duration-300 bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Clipboard className="w-5 h-5" />
-                  )}
-                  <span>{isLoading ? 'Loading...' : 'Paste'}</span>
-                </button>
+              <div className="flex items-center gap-2 pr-1 flex-shrink-0">
+                {/* ============================================
+                    LOADING STATE
+                    ============================================ */}
+                {isLoading && (
+                  <div className="flex items-center gap-2 px-5 h-12 rounded-full bg-slate-100 text-slate-700">
+                    <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+                    <span className="text-sm font-semibold">Fetching</span>
+                    <span className="flex gap-0.5">
+                      <span className="w-1 h-1 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-1 h-1 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-1 h-1 rounded-full bg-pink-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </span>
+                  </div>
+                )}
+
+                {/* ============================================
+                    CLEAR BUTTON (jab URL hai)
+                    ============================================ */}
+                {!isLoading && url?.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClear}
+                    className="flex items-center justify-center gap-1.5 px-4 h-12 font-semibold rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all duration-300 active:scale-[0.98]"
+                    aria-label="Clear input"
+                  >
+                    <X className="w-4 h-4" />
+                    <span className="text-sm">Clear</span>
+                  </button>
+                )}
+
+                {/* ============================================
+                    PASTE BUTTON (jab URL empty)
+                    ============================================ */}
+                {!isLoading && !url?.length && (
+                  <button
+                    type="button"
+                    onClick={handlePaste}
+                    className="flex items-center justify-center gap-2 px-5 sm:px-6 h-12 font-semibold rounded-full transition-all duration-300 bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                    aria-label="Paste URL"
+                  >
+                    <Clipboard className="w-4 h-4" />
+                    <span className="text-sm">Paste</span>
+                  </button>
+                )}
               </div>
             </form>
 
+            {/* Hint + Report issue */}
             <div className="flex items-center justify-between mt-4 px-2">
               <p className="text-xs text-slate-400">
-                {isLoading ? '⏳ Downloading...' : 'Link paste karte hi auto download hoga'}
+                {isLoading
+                  ? '⏳ Video fetch ho raha hai...'
+                  : url?.length > 0
+                  ? '⏎ Enter dabao ya wait karo — auto-download hoga'
+                  : 'Link paste karte hi auto-download hoga'}
               </p>
               <Link
                 to="/contact"
