@@ -6,24 +6,26 @@ export default function ResultCard({ data, onReset }) {
   const isAudio = data.type === 'audio'
   const isImage = data.type === 'image'
 
-  const handleDownload = () => {
-    const link = document.createElement('a')
-    link.href = data.downloadUrl
-    link.target = '_blank'
-    link.rel = 'noopener noreferrer'
-    link.download = `${data.title || 'video'}.mp4`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
+  const typeLabel = isImage ? 'Photo' : isAudio ? 'Audio' : 'Video'
+  const extension = isImage ? 'jpg' : isAudio ? 'mp3' : 'mp4'
 
-  const handleAudioDownload = () => {
-    if (!data.audioUrl) return
+  const handleDownload = () => {
+    // Type ke hisab se URL choose karo
+    let downloadUrl = data.downloadUrl
+
+    if (isAudio && data.audioUrl) {
+      downloadUrl = data.audioUrl
+    } else if (isImage && data.imageUrl) {
+      downloadUrl = data.imageUrl
+    }
+
+    if (!downloadUrl) return
+
     const link = document.createElement('a')
-    link.href = data.audioUrl
-    link.target = '_blank'
+    link.href = downloadUrl
+    link.download = `${data.title || typeLabel}.${extension}`
     link.rel = 'noopener noreferrer'
-    link.download = `${data.title || 'audio'}.mp3`
+    link.target = '_blank'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -38,9 +40,13 @@ export default function ResultCard({ data, onReset }) {
             <div className="relative mx-auto w-full max-w-[220px] flex-shrink-0 sm:mx-0 sm:w-52">
               {isImage ? (
                 <img
-                  src={data.thumbnail || data.rawVideoUrl}
+                  src={data.imageUrl || data.thumbnail}
                   alt={data.title}
-                  className="w-full rounded-2xl border border-slate-100 object-cover"
+                  className="w-full aspect-square rounded-2xl border border-slate-100 object-cover"
+                  onError={(e) => {
+                    e.target.src =
+                      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23334155" width="100" height="100"/%3E%3C/svg%3E'
+                  }}
                 />
               ) : (
                 <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-900">
@@ -65,14 +71,7 @@ export default function ResultCard({ data, onReset }) {
                     </div>
                   </div>
 
-                  {/* Quality badge (top-right) */}
-                  {data.videoQuality && !isAudio && (
-                    <div className="absolute top-2 right-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-semibold text-white">
-                      {data.videoQuality}
-                    </div>
-                  )}
-
-                  {/* Duration badge (bottom-left) */}
+                  {/* Duration badge */}
                   {data.duration && data.duration !== '00:00' && (
                     <div className="absolute bottom-2 left-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white">
                       {data.duration}
@@ -92,25 +91,14 @@ export default function ResultCard({ data, onReset }) {
                 <p className="text-xs text-slate-500">{data.author}</p>
               )}
 
-              {/* Main download button */}
+              {/* Single Download button — tab-specific */}
               <button
                 onClick={handleDownload}
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-600 px-6 h-12 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
               >
                 <Download size={18} />
-                {isImage ? 'Download Photo' : isAudio ? 'Download Audio' : 'Download Video'}
+                Download {typeLabel}
               </button>
-
-              {/* Bonus: Audio download (agar video hai aur audio bhi available hai) */}
-              {data.audioUrl && data.type === 'video' && (
-                <button
-                  onClick={handleAudioDownload}
-                  className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-indigo-500 bg-white px-6 h-12 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50"
-                >
-                  <Music size={16} />
-                  Download Audio (MP3)
-                </button>
-              )}
 
               {/* Reset button */}
               <button
