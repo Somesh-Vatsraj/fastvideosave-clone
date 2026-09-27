@@ -3,6 +3,7 @@
 A modern, fast, and fully-featured Instagram Reels, Video, Photo & Audio downloader built with **React + Vite + Tailwind CSS**.
 
 ---
+<img width="1280" height="5361" alt="https-fastvideosave-clone someshsoftwareengineer-233 workers dev-" src="https://github.com/user-attachments/assets/122c5936-3b0b-4f7a-b0a1-2fc8103cf6dd" />
 
 ## ✨ Features
 
@@ -442,7 +443,7 @@ This project is **not affiliated** with Instagram™, Facebook™, or Meta™. W
 
 ## 📞 Support
 
-- 📧 Email: support@fastvideosave.net
+- 📞 Telegram: (https://t.me/vatsrajtech)
 - 💬 Contact: /contact
 
 ---
