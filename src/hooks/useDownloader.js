@@ -7,12 +7,17 @@ export default function useDownloader(platform = 'Instagram', type = 'video') {
   const [mediaData, setMediaData] = useState(null)
   const [error, setError] = useState('')
 
-  const submit = async (e) => {
+  // ============================================
+  // submit(e, explicitUrl)
+  // explicitUrl pass karo taaki stale closure issue na ho
+  // ============================================
+  const submit = async (e, explicitUrl) => {
     e?.preventDefault?.()
     setError('')
     setMediaData(null)
 
-    const targetUrl = e?.target?.url?.value || url
+    // Priority: explicit URL > event target > state
+    const targetUrl = explicitUrl || e?.target?.url?.value || url
 
     if (!targetUrl?.trim()) {
       setError('Please paste a link first.')
@@ -32,9 +37,7 @@ export default function useDownloader(platform = 'Instagram', type = 'video') {
       const data = await fetchVideoInfo(targetUrl.trim())
       console.log('API Response:', data)
 
-      // ============================================
       // Parse response
-      // ============================================
       let videoUrl = null
       let audioUrl = null
       let imageUrl = null
@@ -67,7 +70,6 @@ export default function useDownloader(platform = 'Instagram', type = 'video') {
         extract(data.data || data.result || data)
       }
 
-      // Relative URL fix
       const fixUrl = (u) =>
         u && u.startsWith('/') ? `https://api-loux.onrender.com${u}` : u
 
@@ -75,24 +77,16 @@ export default function useDownloader(platform = 'Instagram', type = 'video') {
       audioUrl = fixUrl(audioUrl)
       imageUrl = fixUrl(imageUrl)
 
-      // ============================================
-      // Extension + Filename based on type
-      // ============================================
+      // Extension + filename
       const ext = type === 'audio' ? 'mp3' : type === 'image' ? 'jpg' : 'mp4'
       const safeTitle = title.replace(/[^a-z0-9]/gi, '_').slice(0, 40) || 'media'
       const filename = `${safeTitle}.${ext}`
 
-      // ============================================
       // Choose URL by type
-      // ============================================
       let finalUrl = null
-      if (type === 'audio') {
-        finalUrl = audioUrl || videoUrl
-      } else if (type === 'image') {
-        finalUrl = imageUrl || thumbnail
-      } else {
-        finalUrl = videoUrl
-      }
+      if (type === 'audio') finalUrl = audioUrl || videoUrl
+      else if (type === 'image') finalUrl = imageUrl || thumbnail
+      else finalUrl = videoUrl
 
       if (!finalUrl) {
         throw new Error(`No ${type} found in this URL.`)
