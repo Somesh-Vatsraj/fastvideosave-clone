@@ -7,45 +7,6 @@ export default function useDownloader(platform = 'Instagram', type = 'video') {
   const [mediaData, setMediaData] = useState(null)
   const [error, setError] = useState('')
 
-  // ============================================
-  // Deep search: har nested object/array me dhundo
-  // ============================================
-  const deepFindUrl = (obj, keys, depth = 0) => {
-    if (!obj || depth > 5) return null
-
-    if (typeof obj === 'string') {
-      // Agar string URL lagti hai toh return
-      if (obj.startsWith('http') && /\.(mp4|jpg|jpeg|png|mp3|webm|m4a)/i.test(obj)) {
-        return obj
-      }
-      return null
-    }
-
-    if (Array.isArray(obj)) {
-      for (const item of obj) {
-        const found = deepFindUrl(item, keys, depth + 1)
-        if (found) return found
-      }
-      return null
-    }
-
-    if (typeof obj === 'object') {
-      // Pehle direct keys check karo
-      for (const key of keys) {
-        if (obj[key] && typeof obj[key] === 'string' && obj[key].startsWith('http')) {
-          return obj[key]
-        }
-      }
-      // Phir nested objects me dhundo
-      for (const k of Object.keys(obj)) {
-        const found = deepFindUrl(obj[k], keys, depth + 1)
-        if (found) return found
-      }
-    }
-
-    return null
-  }
-
   const submit = async (e, explicitUrl) => {
     e?.preventDefault?.()
     setError('')
@@ -69,103 +30,89 @@ export default function useDownloader(platform = 'Instagram', type = 'video') {
 
     try {
       const data = await fetchVideoInfo(targetUrl.trim())
+      console.log('API Response:', data)
 
-      // ============================================
-      // DEBUG: Full response console me print karo
-      // ============================================
-      console.log('=== FULL API RESPONSE ===')
-      console.log(JSON.stringify(data, null, 2))
-      console.log('=== END ===')
-
-      // Agar API ne error diya
-      if (data?.error || data?.success === false || data?.status === 'error') {
-        throw new Error(data.error || data.message || 'API returned an error')
+      // Error check
+      if (!data?.success) {
+        throw new Error(data?.error || data?.message || 'API returned error')
       }
 
       // ============================================
-      // Video URL — deep search with many keys
+      // EXACT PARSER for api-loux response
       // ============================================
-      const videoKeys = [
-        'video_url', 'videoUrl', 'video', 'download_url', 'downloadUrl',
-        'download', 'url', 'link', 'src', 'source', 'media_url',
-        'play_url', 'playUrl', 'hd', 'sd', 'hd_url', 'sd_url',
-        'mp4', 'mp4_url', 'video_link', 'contentUrl', 'content_url',
-        'playable_url', 'file', 'file_url',
-      ]
+      const mediaArray = Array.isArray(data.media) ? data.media : []
 
-      // ============================================
-      // Image URL keys
-      // ============================================
-      const imageKeys = [
-        'image_url', 'imageUrl', 'image', 'thumbnail', 'thumb',
-        'cover', 'preview', 'display_url', 'displayUrl', 'picture',
-        'poster', 'icon',
-      ]
+      // Media items by type
+      const videoItem = mediaArray.find(
+        (m) => m.type === 'video' && (m.has_video === true || m.container?.includes('video'))
+      )
+      const audioItem = mediaArray.find(
+        (m) => m.type === 'audio' && (m.has_audio === true || m.container?.includes('audio'))
+      )
+      const photoItem = mediaArray.find(
+        (m) => m.type === 'photo' && (m.has_photo === true || m.container?.includes('image'))
+      )
 
-      // ============================================
-      // Audio URL keys
-      // ============================================
-      const audioKeys = [
-        'audio_url', 'audioUrl', 'audio', 'music', 'music_url',
-        'sound', 'sound_url', 'mp3', 'mp3_url',
-      ]
+      const videoUrl = videoItem?.url || null
+      const audioUrl = audioItem?.url || null
+      const imageUrl = photoItem?.url || null
 
-      // Video URL dhundo
-      let videoUrl = deepFindUrl(data, videoKeys)
-      let imageUrl = deepFindUrl(data, imageKeys)
-      let audioUrl = deepFindUrl(data, audioKeys)
-
-      // Agar video nahi mila, image me se try karo
-      if (!videoUrl && imageUrl) {
-        // maybe it's an image post
-        videoUrl = null
-      }
-
-      console.log('Parsed URLs:', { videoUrl, audioUrl, imageUrl })
-
-      // ============================================
-      // Metadata extract karo (best effort)
-      // ============================================
-      const meta = data?.data || data?.result || data?.media || data || {}
-      const title = meta.title || meta.caption || meta.description || meta.desc ||
-                    `${platform} ${type}`
-      const author = meta.author || meta.username || meta.owner ||
-                     meta.user?.username || meta.user?.name || '@user'
-      const duration = meta.duration || meta.length || '00:00'
-      const thumbnail = meta.thumbnail || meta.thumb || meta.cover ||
-                       meta.preview || meta.image || imageUrl || ''
+      // Metadata
+      const caption = data.caption || ''
+      const username = data.username || ''
+      const title = caption
+        ? caption.slice(0, 80) + (caption.length > 80 ? '...' : '')
+        : `${platform} ${type} by ${username || 'user'}`
+      const author = username ? `@${username}` : '@user'
+      const thumbnail = data.profile_image_uri || imageUrl || ''
+      const duration = videoItem?.duration
+        ? `${Math.floor(videoItem.duration / 60)}:${String(videoItem.duration % 60).padStart(2, '0')}`
+        : '00:00'
+      const quality = videoItem?.quality || 'HD'
 
       // ============================================
       // Type ke hisab se final URL
       // ============================================
       let finalUrl = null
+      let ext = 'mp4'
+
       if (type === 'audio') {
-        finalUrl = audioUrl || videoUrl
+        finalUrl = audioUrl
+        ext = 'm4a' // audio/mp4 container
+        if (!finalUrl) {
+          throw new Error(
+            'Is post me audio track nahi mila. Try a different reel with music.'
+          )
+        }
       } else if (type === 'image') {
-        finalUrl = imageUrl || thumbnail
+        finalUrl = imageUrl
+        ext = 'jpg'
+        if (!finalUrl) {
+          throw new Error(
+            'Is post me photo nahi mili. Ye video-only post ho sakti hai.'
+          )
+        }
       } else {
-        finalUrl = videoUrl || imageUrl // fallback to image for video tab
+        // video
+        finalUrl = videoUrl
+        ext = 'mp4'
+        if (!finalUrl) {
+          // Agar video nahi hai toh photo fallback
+          if (imageUrl) {
+            finalUrl = imageUrl
+            ext = 'jpg'
+          } else {
+            throw new Error('Is post me video nahi mili.')
+          }
+        }
       }
-
-      if (!finalUrl) {
-        // ============================================
-        // Debug ke liye response structure dikhao
-        // ============================================
-        console.error('Available keys:', Object.keys(data || {}))
-        console.error('Full response:', data)
-        throw new Error(
-          'Could not extract media URL. Check browser console (F12) for API response structure.'
-        )
-      }
-
-      // Relative URLs fix
-      const fixUrl = (u) =>
-        u && u.startsWith('/') ? `https://api-loux.onrender.com${u}` : u
-      finalUrl = fixUrl(finalUrl)
 
       // Filename
-      const ext = type === 'audio' ? 'mp3' : type === 'image' ? 'jpg' : 'mp4'
-      const safeTitle = String(title).replace(/[^a-z0-9]/gi, '_').slice(0, 40) || 'media'
+      const safeTitle = (caption || username || 'media')
+        .replace(/[^a-z0-9]/gi, '_')
+        .slice(0, 40)
+        .replace(/_+/g, '_')
+        .replace(/^_|_$/g, '') || 'media'
       const filename = `${safeTitle}.${ext}`
 
       setMediaData({
@@ -173,12 +120,14 @@ export default function useDownloader(platform = 'Instagram', type = 'video') {
         title,
         author,
         duration,
+        quality,
         platform,
         type,
         downloadUrl: getDownloadUrl(finalUrl, filename),
         rawVideoUrl: finalUrl,
-        audioUrl: audioUrl ? getDownloadUrl(fixUrl(audioUrl), `${safeTitle}.mp3`) : null,
-        imageUrl: imageUrl || thumbnail || null,
+        // Additional URLs for other tabs
+        audioUrl: audioUrl ? getDownloadUrl(audioUrl, `${safeTitle}.m4a`) : null,
+        imageUrl: imageUrl,
         filename,
       })
     } catch (err) {
