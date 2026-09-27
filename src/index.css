@@ -41,6 +41,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   BASE LAYER
+   ============================================ */
 @layer base {
   html {
     font-family: 'Be Vietnam Pro', sans-serif;
@@ -57,6 +60,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Audio element */
   audio::-webkit-media-controls-panel {
     background-color: #f8fafc;
   }
@@ -64,6 +68,7 @@
     display: none;
   }
 
+  /* Autofill */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
@@ -72,32 +77,181 @@
     -webkit-text-fill-color: #0f172a !important;
   }
 
+  /* Selection */
   ::selection {
     background-color: #6366f1;
     color: #ffffff;
   }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #c7d2fe;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a5b4fc;
+  }
 }
 
+/* ============================================
+   COMPONENT LAYER
+   ============================================ */
 @layer components {
+  /* Glass panel — frosted glass effect */
   .glass-panel {
     @apply border border-slate-200 bg-white/60 backdrop-blur-md;
   }
 
+  /* Text gradient — indigo → purple → pink */
   .text-gradient {
-  @apply bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent;
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-md hover:-translate-y-0.5;
+  }
+
+  /* Button ripple base */
+  .btn-ripple {
+    position: relative;
+    overflow: hidden;
   }
 }
 
-/* AdSense anti-anchor */
+/* ============================================
+   UTILITY EFFECTS (Same as original site)
+   ============================================ */
+
+/* Fade in */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Slide up */
+@keyframes slideUp {
+  0% { transform: translateY(15px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+/* Slow bounce for dots */
+@keyframes bounceSoft {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-4px); }
+}
+.animate-bounce-soft {
+  animation: bounceSoft 1.2s infinite;
+}
+
+/* Shimmer effect (loading skeleton) */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Pulse glow */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(99, 102, 241, 0); }
+}
+.animate-pulse-glow {
+  animation: pulseGlow 2s infinite;
+}
+
+/* Gradient shift for headings */
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* Blur circle for hero bg */
+.hero-blur {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 48rem;
+  height: 400px;
+  background: rgba(99, 102, 241, 0.1);
+  filter: blur(120px);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+/* Watermark text (behind ads) */
+.watermark-text {
+  opacity: 0.03;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ============================================
+   ADSENSE ANTI-ANCHOR
+   ============================================ */
 html.popad-open .adsbygoogle-noablate,
 body.popad-open .adsbygoogle-noablate,
-html.hide-anchor .adsbygoogle-noablate,
-body.hide-anchor .adsbygoogle-noablate,
+html.popad-open ins.adsbygoogle-noablate,
+body.popad-open ins.adsbygoogle-noablate,
+html.popad-open #google_ads_iframe_anchor_container,
+body.popad-open #google_ads_iframe_anchor_container,
+html.popad-open #google_ads_iframe_anchor_container_anchor,
+body.popad-open #google_ads_iframe_anchor_container_anchor,
 html.popad-open .google-auto-placed,
 body.popad-open .google-auto-placed,
+html.hide-anchor .adsbygoogle-noablate,
+body.hide-anchor .adsbygoogle-noablate,
+html.hide-anchor ins.adsbygoogle-noablate,
+body.hide-anchor ins.adsbygoogle-noablate,
+html.hide-anchor #google_ads_iframe_anchor_container,
+body.hide-anchor #google_ads_iframe_anchor_container,
+html.hide-anchor #google_ads_iframe_anchor_container_anchor,
+body.hide-anchor #google_ads_iframe_anchor_container_anchor,
 html.hide-anchor .google-auto-placed,
 body.hide-anchor .google-auto-placed {
   display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
   height: 0 !important;
+  max-height: 0 !important;
   overflow: hidden !important;
+}
+
+html.popad-open,
+body.popad-open,
+html.hide-anchor,
+body.hide-anchor {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
