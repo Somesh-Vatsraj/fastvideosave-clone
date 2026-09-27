@@ -7,7 +7,6 @@ export default function ResultCard({ data, onReset }) {
   const isImage = data.type === 'image'
   const isVideo = data.type === 'video'
 
-  // Type-specific label, icon, colors
   const config = {
     video: {
       label: 'Video',
@@ -58,19 +57,56 @@ export default function ResultCard({ data, onReset }) {
       <div className="mx-auto max-w-2xl">
         <div className="glass-panel p-6 sm:p-8 rounded-3xl">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-            {/* Preview */}
+            {/* ============================================
+                PREVIEW
+                Video tab → actual <video> player
+                Image tab → actual <img>
+                Audio tab → thumbnail + music icon
+                ============================================ */}
             <div className="relative mx-auto w-full max-w-[220px] flex-shrink-0 sm:mx-0 sm:w-52">
-              {isImage ? (
+              {/* ---------- IMAGE ---------- */}
+              {isImage && (
                 <img
                   src={data.imageUrl || data.thumbnail}
                   alt={data.title}
                   className="w-full aspect-square rounded-2xl border border-slate-100 object-cover"
                   onError={(e) => {
                     e.target.src =
-                      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23e2e8f0" width="100" height="100"/%3E%3Ctext x="50" y="55" text-anchor="middle" fill="%2394a3b8" font-size="30"%3E🖼️%3C/text%3E%3C/svg%3E'
+                      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23fce7f3" width="100" height="100"/%3E%3Ctext x="50" y="55" text-anchor="middle" fill="%23db2777" font-size="30"%3E🖼️%3C/text%3E%3C/svg%3E'
                   }}
                 />
-              ) : (
+              )}
+
+              {/* ---------- VIDEO ---------- */}
+              {isVideo && (
+                <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-black">
+                  <video
+                    src={data.rawVideoUrl}
+                    poster={data.thumbnail}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="w-full aspect-[9/16] object-cover bg-black"
+                  >
+                    Your browser does not support video.
+                  </video>
+
+                  {/* Type badge overlay */}
+                  <div className={`pointer-events-none absolute top-2 left-2 flex items-center gap-1 rounded-full ${current.badgeBg} px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wide shadow-md`}>
+                    <TypeIcon size={10} />
+                    {current.label}
+                  </div>
+
+                  {data.quality && (
+                    <div className="pointer-events-none absolute top-2 right-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-semibold text-white">
+                      {data.quality}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ---------- AUDIO ---------- */}
+              {isAudio && (
                 <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-900">
                   <img
                     src={data.thumbnail}
@@ -82,37 +118,25 @@ export default function ResultCard({ data, onReset }) {
                     }}
                   />
 
-                  {/* Center type icon overlay */}
+                  {/* Bada music icon center me */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/95 shadow-lg">
-                      <TypeIcon size={24} className={current.color} />
+                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/95 shadow-2xl">
+                      <Music size={36} className="text-purple-600" />
                     </div>
                   </div>
 
-                  {/* Type badge — top left */}
+                  {/* Type badge */}
                   <div className={`absolute top-2 left-2 flex items-center gap-1 rounded-full ${current.badgeBg} px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wide`}>
                     <TypeIcon size={10} />
                     {current.label}
                   </div>
-
-                  {/* Quality badge — top right (video only) */}
-                  {isVideo && data.quality && (
-                    <div className="absolute top-2 right-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-semibold text-white">
-                      {data.quality}
-                    </div>
-                  )}
-
-                  {/* Duration — bottom left */}
-                  {data.duration && data.duration !== '00:00' && (
-                    <div className="absolute bottom-2 left-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white">
-                      {data.duration}
-                    </div>
-                  )}
                 </div>
               )}
             </div>
 
-            {/* Details + Actions */}
+            {/* ============================================
+                DETAILS + ACTIONS
+                ============================================ */}
             <div className="flex flex-1 flex-col gap-3 min-w-0">
               {/* Type chip */}
               <div className={`inline-flex items-center gap-1.5 self-start rounded-full ${current.bg} px-3 py-1 text-[11px] font-bold ${current.color} uppercase tracking-wider`}>
@@ -128,7 +152,7 @@ export default function ResultCard({ data, onReset }) {
                 <p className="text-xs text-slate-500">{data.author}</p>
               )}
 
-              {/* Download button — type colored */}
+              {/* Download button */}
               <button
                 onClick={handleDownload}
                 className={`flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r ${current.gradient} px-6 h-12 text-sm font-semibold text-white shadow-lg ${current.shadow} transition-all duration-300 ${current.hoverShadow} hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]`}
