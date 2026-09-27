@@ -5,27 +5,14 @@ export default function ResultCard({ data, onReset }) {
 
   const isAudio = data.type === 'audio'
   const isImage = data.type === 'image'
-
   const typeLabel = isImage ? 'Photo' : isAudio ? 'Audio' : 'Video'
-  const extension = isImage ? 'jpg' : isAudio ? 'mp3' : 'mp4'
 
   const handleDownload = () => {
-    // Type ke hisab se URL choose karo
-    let downloadUrl = data.downloadUrl
-
-    if (isAudio && data.audioUrl) {
-      downloadUrl = data.audioUrl
-    } else if (isImage && data.imageUrl) {
-      downloadUrl = data.imageUrl
-    }
-
-    if (!downloadUrl) return
-
+    // downloadUrl already has filename parameter
+    // Browser Content-Disposition header se filename lega
     const link = document.createElement('a')
-    link.href = downloadUrl
-    link.download = `${data.title || typeLabel}.${extension}`
+    link.href = data.downloadUrl
     link.rel = 'noopener noreferrer'
-    link.target = '_blank'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -59,8 +46,6 @@ export default function ResultCard({ data, onReset }) {
                         'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"%3E%3Crect fill="%23334155" width="100" height="150"/%3E%3C/svg%3E'
                     }}
                   />
-
-                  {/* Play/audio icon overlay */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/95 shadow-lg">
                       {isAudio ? (
@@ -70,8 +55,6 @@ export default function ResultCard({ data, onReset }) {
                       )}
                     </div>
                   </div>
-
-                  {/* Duration badge */}
                   {data.duration && data.duration !== '00:00' && (
                     <div className="absolute bottom-2 left-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-medium text-white">
                       {data.duration}
@@ -91,7 +74,7 @@ export default function ResultCard({ data, onReset }) {
                 <p className="text-xs text-slate-500">{data.author}</p>
               )}
 
-              {/* Single Download button — tab-specific */}
+              {/* Single Download button — filename via Content-Disposition */}
               <button
                 onClick={handleDownload}
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-600 px-6 h-12 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
@@ -100,7 +83,6 @@ export default function ResultCard({ data, onReset }) {
                 Download {typeLabel}
               </button>
 
-              {/* Reset button */}
               <button
                 onClick={onReset}
                 className="flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 h-12 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
