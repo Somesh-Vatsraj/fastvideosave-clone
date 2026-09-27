@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE = 'https://api-loux.onrender.com'
+const API_BASE = 'https://viddrop.in/'
 
 // ============================================
 // MAIN API: Video info fetch
