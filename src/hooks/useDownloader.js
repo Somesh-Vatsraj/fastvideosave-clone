@@ -1,37 +1,6 @@
 import { useState } from 'react'
 import { fetchVideoInfo, getDownloadUrl } from '../config/api'
 
-// ============================================
-// Detect platform from URL
-// ============================================
-const detectPlatform = (url) => {
-  try {
-    const host = new URL(url).hostname.toLowerCase()
-    if (host.includes('instagram')) return 'Instagram'
-    if (host.includes('facebook') || host.includes('fb.watch')) return 'Facebook'
-    return 'Unknown'
-  } catch {
-    return 'Unknown'
-  }
-}
-
-// ============================================
-// Pick highest quality video from media array
-// ============================================
-const pickBestVideo = (mediaList) => {
-  const videos = mediaList.filter((m) => m.type === 'video' && m.url)
-  if (!videos.length) return null
-
-  // Sort by quality (720p > 480p > 360p > others)
-  const qualityScore = (q) => {
-    if (!q) return 0
-    const match = q.match(/(\d+)/)
-    return match ? parseInt(match[1], 10) : 0
-  }
-
-  return videos.sort((a, b) => qualityScore(b.quality) - qualityScore(a.quality))[0]
-}
-
 export default function useDownloader(platform = 'Instagram', type = 'video') {
   const [url, setUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -61,76 +30,72 @@ export default function useDownloader(platform = 'Instagram', type = 'video') {
 
     try {
       const data = await fetchVideoInfo(targetUrl.trim())
-
-      console.log('========== API RESPONSE ==========')
-      console.log(data)
-      console.log('==================================')
-
-      if (!data?.success) {
-        throw new Error(data?.message || 'API returned an error')
-      }
-
-      const detectedPlatform = data.platform
-        ? data.platform.charAt(0).toUpperCase() + data.platform.slice(1)
-        : detectPlatform(targetUrl)
-
-      const mediaList = data.media || []
-
-      const bestVideo = pickBestVideo(mediaList)
-      const audioItem = mediaList.find((m) => m.type === 'audio' && m.url)
-      const photoItem = mediaList.find((m) => m.type === 'photo' && m.has_photo)
+      console.log('API Response:', data)
 
       // ============================================
-      // Main download URL based on requested type
+      // Parse response
       // ============================================
-      let mainUrl = null
-      let downloadType = 'video'
+      let videoUrl = null
+      let audioUrl = null
+      let imageUrl = null
+      let thumbnail = ''
+      let title = `${platform} ${type}`
+      let author = '@user'
+      let duration = '00:00'
 
-      if (type === 'audio' && audioItem) {
-        mainUrl = audioItem.url
-        downloadType = 'audio'
-      } else if (type === 'image' && photoItem) {
-        mainUrl = photoItem.url
-        downloadType = 'image'
-      } else if (bestVideo) {
-        mainUrl = bestVideo.url
-        downloadType = 'video'
-      } else if (audioItem) {
-        mainUrl = audioItem.url
-        downloadType = 'audio'
-      } else if (photoItem) {
-        mainUrl = photoItem.url
-        downloadType = 'image'
+      const extract = (obj) => {
+        videoUrl =
+          obj.video_url || obj.videoUrl ||
+          obj.download_url || obj.downloadUrl ||
+          obj.url || obj.link ||
+          obj.medias?.[0]?.url || obj.medias?.[0]?.link ||
+          obj.links?.[0]?.link || obj.links?.[0]?.url ||
+          null
+
+        audioUrl = obj.audio_url || obj.audioUrl || obj.audio || obj.music || null
+        imageUrl = obj.image_url || obj.imageUrl || obj.image || obj.thumbnail || null
+
+        thumbnail = obj.thumbnail || obj.thumb || obj.cover || obj.preview || obj.image || ''
+        title = obj.title || obj.caption || obj.description || `${platform} ${type}`
+        author = obj.author || obj.username || obj.owner || '@user'
+        duration = obj.duration || '00:00'
       }
 
-      if (!mainUrl) {
-        throw new Error('No downloadable media found in this URL.')
+      if (Array.isArray(data)) {
+        extract(data[0] || {})
+      } else if (data && typeof data === 'object') {
+        extract(data.data || data.result || data)
       }
 
-      // Thumbnail
-      const thumbnail =
-        photoItem?.url ||
-        data.profile_image_uri ||
-        ''
+      // Relative URL fix
+      const fixUrl = (u) =>
+        u && u.startsWith('/') ? `https://api-loux.onrender.com${u}` : u
 
-      // Title
-      const title =
-        data.caption?.trim() ||
-        data.description?.trim() ||
-        `${detectedPlatform} ${downloadType}`
+      videoUrl = fixUrl(videoUrl)
+      audioUrl = fixUrl(audioUrl)
+      imageUrl = fixUrl(imageUrl)
 
-      // Author
-      const author = data.username ? `@${data.username}` : '@user'
+      // ============================================
+      // Extension + Filename based on type
+      // ============================================
+      const ext = type === 'audio' ? 'mp3' : type === 'image' ? 'jpg' : 'mp4'
+      const safeTitle = title.replace(/[^a-z0-9]/gi, '_').slice(0, 40) || 'media'
+      const filename = `${safeTitle}.${ext}`
 
-      // Duration from video item
-      let duration = ''
-      if (bestVideo?.duration) {
-        const sec = bestVideo.duration
-        duration = `${Math.floor(sec / 60)
-          .toString()
-          .padStart(2, '0')}:${(sec % 60).toString().padStart(2, '0')}`
-      } else if (data.duration) {
-        duration = data.duration
+      // ============================================
+      // Choose URL by type
+      // ============================================
+      let finalUrl = null
+      if (type === 'audio') {
+        finalUrl = audioUrl || videoUrl
+      } else if (type === 'image') {
+        finalUrl = imageUrl || thumbnail
+      } else {
+        finalUrl = videoUrl
+      }
+
+      if (!finalUrl) {
+        throw new Error(`No ${type} found in this URL.`)
       }
 
       setMediaData({
@@ -138,24 +103,17 @@ export default function useDownloader(platform = 'Instagram', type = 'video') {
         title,
         author,
         duration,
-        platform: detectedPlatform,
-        type: downloadType,
-        downloadUrl: getDownloadUrl(mainUrl),
-        rawVideoUrl: mainUrl,
-        audioUrl: audioItem?.url ? getDownloadUrl(audioItem.url) : null,
-        audioRawUrl: audioItem?.url || null,
-        videoQuality: bestVideo?.quality || null,
-        profileImage: data.profile_image_uri,
-        mediaItems: mediaList,
-        videoCount: mediaList.filter((m) => m.type === 'video').length,
+        platform,
+        type,
+        downloadUrl: getDownloadUrl(finalUrl, filename),
+        rawVideoUrl: finalUrl,
+        audioUrl: audioUrl ? getDownloadUrl(audioUrl, `${safeTitle}.mp3`) : null,
+        imageUrl: imageUrl || thumbnail || null,
+        filename,
       })
     } catch (err) {
-      console.error('❌ Download error:', err)
-      setError(
-        err.response?.data?.message ||
-          err.message ||
-          'Failed to fetch. Please check the URL and try again.'
-      )
+      console.error('Download error:', err)
+      setError(err.response?.data?.message || err.message || 'Failed to fetch.')
     } finally {
       setIsLoading(false)
     }
