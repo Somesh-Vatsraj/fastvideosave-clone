@@ -1,200 +1,129 @@
-import { useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import { Link as LinkIcon, Clipboard, Loader2, AlertTriangle, Download } from 'lucide-react'
-import { SITE } from '../config/site'
+import { Download, RefreshCw, Play, Music } from 'lucide-react'
 
-export default function Hero({
-  heading = 'Instagram <gradient>Reels</gradient> Download',
-  subtitle = 'Fastest tool to download reels video:',
-  placeholder = 'Paste Link Here...',
-  url,
-  setUrl,
-  onSubmit,
-  isLoading,
-  error,
-}) {
-  const debounceRef = useRef(null)
-  const lastSubmittedUrl = useRef('')
+export default function ResultCard({ data, onReset }) {
+  if (!data) return null
 
-  // ============================================
-  // Heading parser
-  // ============================================
-  const renderHeading = () => {
-    const parts = heading.split(/(<gradient>.*?<\/gradient>)/g)
-    return parts.map((part, i) => {
-      const match = part.match(/^<gradient>(.*?)<\/gradient>$/)
-      if (match) {
-        return (
-          <span key={i} className="text-gradient">
-            {match[1]}
-          </span>
-        )
-      }
-      return <span key={i}>{part}</span>
-    })
+  const isAudio = data.type === 'audio'
+  const isImage = data.type === 'image'
+
+  const handleDownload = () => {
+    const link = document.createElement('a')
+    link.href = data.downloadUrl
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    link.download = `${data.title || 'video'}.mp4`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
-  // ============================================
-  // Sirf Instagram + Facebook supported
-  // ============================================
-  const isSupportedUrl = (value) => {
-    if (!value || value.length < 15) return false
-    try {
-      const u = new URL(value)
-      const host = u.hostname.toLowerCase()
-      return (
-        host.includes('instagram.com') ||
-        host.includes('facebook.com') ||
-        host.includes('fb.watch')
-      )
-    } catch {
-      return false
-    }
-  }
-
-  // ============================================
-  // Debounced auto-submit
-  // ============================================
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-
-    if (isSupportedUrl(url) && url !== lastSubmittedUrl.current && !isLoading) {
-      debounceRef.current = setTimeout(() => {
-        if (url !== lastSubmittedUrl.current && !isLoading) {
-          lastSubmittedUrl.current = url
-          onSubmit?.({ preventDefault: () => {} })
-        }
-      }, 800)
-    }
-
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url])
-
-  // ============================================
-  // Paste button → auto submit
-  // ============================================
-  const handlePaste = async () => {
-    try {
-      const text = await navigator.clipboard.readText()
-      if (!text) return
-
-      const cleanUrl = text.trim()
-      setUrl(cleanUrl)
-      lastSubmittedUrl.current = cleanUrl
-
-      setTimeout(() => {
-        onSubmit?.({ preventDefault: () => {} })
-      }, 50)
-    } catch (err) {
-      console.error('Clipboard read failed:', err)
-    }
-  }
-
-  // ============================================
-  // Form submit (Enter key)
-  // ============================================
-  const handleFormSubmit = (e) => {
-    e.preventDefault()
-    if (!url?.trim() || isLoading) return
-    lastSubmittedUrl.current = url
-    onSubmit?.(e)
+  const handleAudioDownload = () => {
+    if (!data.audioUrl) return
+    const link = document.createElement('a')
+    link.href = data.audioUrl
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    link.download = `${data.title || 'audio'}.mp3`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   return (
-    <div className="relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
+    <section className="animate-slide-up px-4 pb-10 sm:px-6 lg:px-8">
+      {/* ⚡ Bigger max-width */}
+      <div className="mx-auto max-w-4xl">
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+            {/* ⚡ Bigger Preview — 220px → 320-360px */}
+            <div className="relative mx-auto w-full max-w-[280px] flex-shrink-0 sm:max-w-[320px] lg:mx-0 lg:w-80">
+              {isImage ? (
+                <img
+                  src={data.thumbnail || data.rawVideoUrl}
+                  alt={data.title}
+                  className="w-full rounded-2xl border border-slate-100 object-cover shadow-md"
+                />
+              ) : (
+                <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-900 shadow-md">
+                  <img
+                    src={data.thumbnail}
+                    alt={data.title}
+                    className="aspect-[9/13] w-full object-cover opacity-90"
+                    onError={(e) => {
+                      e.target.src =
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"%3E%3Crect fill="%23334155" width="100" height="150"/%3E%3C/svg%3E'
+                    }}
+                  />
 
-      <div className="relative px-4 py-6 md:py-12 max-w-5xl mx-auto flex flex-col items-center">
-        <div className="text-center w-full max-w-3xl mb-12">
-          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-5xl font-bold tracking-tight sm:mb-6 text-slate-900 drop-shadow-sm">
-            {renderHeading()}
-          </h1>
+                  {/* ⚡ Bigger play button */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-white/95 shadow-2xl transition-transform hover:scale-110">
+                      {isAudio ? (
+                        <Music size={28} className="text-indigo-600 sm:size-32" />
+                      ) : (
+                        <Play size={26} className="ml-1 fill-indigo-600 text-indigo-600 sm:size-32" />
+                      )}
+                    </div>
+                  </div>
 
-          <p className="text-sm md:text-lg text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            {subtitle} <br />
-            No Logo | High Quality | unlimited
-          </p>
-
-          <div className="w-full max-w-2xl mx-auto">
-            <form
-              onSubmit={handleFormSubmit}
-              className="group relative flex items-center w-full max-w-2xl mx-auto p-1 bg-white backdrop-blur-md border rounded-full transition-all duration-300 shadow-indigo-900/5 border-indigo-200 focus-within:border-indigo-500"
-            >
-              <div className="flex items-center justify-center pl-4 pr-2 transition-colors duration-300 text-slate-400 group-focus-within:text-indigo-500">
-                <LinkIcon className="w-5 h-5" />
-              </div>
-
-              <input
-                type="url"
-                name="url"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder={placeholder}
-                autoComplete="off"
-                spellCheck="false"
-                disabled={isLoading}
-                className="flex-1 bg-transparent placeholder-slate-400 font-medium h-14 px-2 text-base md:text-lg focus:outline-none w-full transition-colors text-slate-900 disabled:opacity-60"
-                required
-              />
-
-              <div className="flex items-center gap-2 pr-1">
-                <button
-                  type="button"
-                  onClick={handlePaste}
-                  disabled={isLoading}
-                  className="flex items-center justify-center gap-2 px-4 sm:px-6 h-12 font-semibold rounded-full transition-all duration-300 bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-                  aria-label="Paste URL"
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Clipboard className="w-5 h-5" />
+                  {/* Quality badge — bigger */}
+                  {data.videoQuality && !isAudio && (
+                    <div className="absolute top-3 right-3 rounded-md bg-black/75 px-2.5 py-1 text-xs font-bold text-white">
+                      {data.videoQuality}
+                    </div>
                   )}
-                  <span className="hidden sm:inline">Paste</span>
-                </button>
 
-                {url && !isLoading && (
-                  <button
-                    type="submit"
-                    className="hidden sm:flex items-center justify-center gap-2 px-4 h-12 font-semibold rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-all duration-300"
-                    aria-label="Download"
-                  >
-                    <Download className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
-            </form>
-
-            <div className="flex items-center justify-between mt-4 px-2">
-              <p className="text-xs text-slate-400">
-                {isLoading
-                  ? '⏳ Fetching video...'
-                  : 'Link paste karte hi auto-download hoga'}
-              </p>
-              <Link
-                to="/contact"
-                className="text-xs text-slate-400 hover:text-indigo-500 transition-colors duration-200 flex items-center gap-1.5"
-              >
-                <AlertTriangle className="w-3.5 h-3.5" />
-                Report an issue
-              </Link>
+                  {/* Duration — bigger */}
+                  {data.duration && data.duration !== '00:00' && (
+                    <div className="absolute bottom-3 left-3 rounded-md bg-black/75 px-2.5 py-1 text-xs font-semibold text-white">
+                      {data.duration}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            {error && (
-              <p className="mt-3 text-sm text-red-500 text-center font-medium">{error}</p>
-            )}
+            {/* Details + Actions */}
+            <div className="flex flex-1 flex-col gap-3 min-w-0">
+              <h3 className="line-clamp-3 text-base font-semibold text-slate-800 sm:text-lg">
+                {data.title}
+              </h3>
+
+              {data.author && (
+                <p className="text-sm text-slate-500">{data.author}</p>
+              )}
+
+              {/* Main download button — slightly taller */}
+              <button
+                onClick={handleDownload}
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-600 px-6 h-13 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+              >
+                <Download size={20} />
+                {isImage ? 'Download Photo' : isAudio ? 'Download Audio' : 'Download Video'}
+              </button>
+
+              {/* Audio download (bonus) */}
+              {data.audioUrl && data.type === 'video' && (
+                <button
+                  onClick={handleAudioDownload}
+                  className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-indigo-500 bg-white px-6 py-3.5 text-base font-semibold text-indigo-600 transition hover:bg-indigo-50"
+                >
+                  <Music size={18} />
+                  Download Audio (MP3)
+                </button>
+              )}
+
+              {/* Reset */}
+              <button
+                onClick={onReset}
+                className="flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3.5 text-base font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                <RefreshCw size={18} /> Download Again
+              </button>
+            </div>
           </div>
         </div>
-
-        <p className="text-xs text-slate-500 mt-6 max-w-xl mx-auto leading-relaxed text-center">
-          {SITE.domain} is an online free and fast tool which helps you to download instagram
-          reels video or to save reels video to your device. You can save any reels videos to
-          your phone or computer and view them offline anytime.
-        </p>
       </div>
-    </div>
+    </section>
   )
 }
