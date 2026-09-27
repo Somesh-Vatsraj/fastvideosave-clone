@@ -53,15 +53,16 @@ export default function Hero({
     }
   }
 
-  // Auto-submit on URL change (debounced)
+  // Debounced auto-submit — URL explicitly pass karo
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
 
     if (isSupportedUrl(url) && url !== lastSubmittedUrl.current && !isLoading) {
+      const currentUrl = url // capture current value
       debounceRef.current = setTimeout(() => {
-        if (url !== lastSubmittedUrl.current && !isLoading) {
-          lastSubmittedUrl.current = url
-          onSubmit?.({ preventDefault: () => {} })
+        if (currentUrl !== lastSubmittedUrl.current && !isLoading) {
+          lastSubmittedUrl.current = currentUrl
+          onSubmit?.({ preventDefault: () => {} }, currentUrl) // ← URL pass
         }
       }, 800)
     }
@@ -72,7 +73,7 @@ export default function Hero({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
-  // Paste button — read clipboard → set → auto-submit
+  // Paste button — read clipboard → set → submit with explicit URL
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText()
@@ -82,21 +83,19 @@ export default function Hero({
       setUrl(cleanUrl)
       lastSubmittedUrl.current = cleanUrl
 
-      // Turant submit
-      setTimeout(() => {
-        onSubmit?.({ preventDefault: () => {} })
-      }, 50)
+      // Submit with explicit URL (no stale closure)
+      onSubmit?.({ preventDefault: () => {} }, cleanUrl)
     } catch (err) {
       console.error('Clipboard read failed:', err)
     }
   }
 
-  // Enter key submit
+  // Enter key
   const handleFormSubmit = (e) => {
     e.preventDefault()
     if (!url?.trim() || isLoading) return
     lastSubmittedUrl.current = url
-    onSubmit?.(e)
+    onSubmit?.(e, url) // ← URL pass
   }
 
   return (
@@ -142,7 +141,6 @@ export default function Hero({
                   onClick={handlePaste}
                   disabled={isLoading}
                   className="flex items-center justify-center gap-2 px-6 h-12 font-semibold rounded-full transition-all duration-300 bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-                  aria-label="Paste and Download"
                 >
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -154,12 +152,9 @@ export default function Hero({
               </div>
             </form>
 
-            {/* Hint + Report issue */}
             <div className="flex items-center justify-between mt-4 px-2">
               <p className="text-xs text-slate-400">
-                {isLoading
-                  ? '⏳ Downloading...'
-                  : 'Link paste karte hi auto download hoga'}
+                {isLoading ? '⏳ Downloading...' : 'Link paste karte hi auto download hoga'}
               </p>
               <Link
                 to="/contact"
